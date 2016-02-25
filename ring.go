@@ -17,7 +17,7 @@ The default value of the Ring struct is a valid (empty) Ring buffer with capacit
 type Ring struct {
 	head int // the most recent value written
 	tail int // the least recent value written
-	buff []interface{}
+	buff [][]string
 }
 
 /*
@@ -38,7 +38,7 @@ func (r Ring) Capacity() int {
 /*
 Enqueue a value into the Ring buffer.
 */
-func (r *Ring) Enqueue(i interface{}) {
+func (r *Ring) Enqueue(i []string) {
 	r.checkInit()
 	r.set(r.head+1, i)
 	old := r.head
@@ -53,7 +53,7 @@ Dequeue a value from the Ring buffer.
 
 Returns nil if the ring buffer is empty.
 */
-func (r *Ring) Dequeue() interface{} {
+func (r *Ring) Dequeue() []string {
 	r.checkInit()
 	if r.head == -1 {
 		return nil
@@ -73,7 +73,7 @@ Read the value that Dequeue would have dequeued without actually dequeuing it.
 
 Returns nil if the ring buffer is empty.
 */
-func (r *Ring) Peek() interface{} {
+func (r *Ring) Peek() []string {
 	r.checkInit()
 	if r.head == -1 {
 		return nil
@@ -86,11 +86,11 @@ Values returns a slice of all the values in the circular buffer without modifyin
 The returned slice can be modified independently of the circular buffer. However, the values inside the slice
 are shared between the slice and circular buffer.
 */
-func (r *Ring) Values() []interface{} {
+func (r *Ring) Values() [][]string {
 	if r.head == -1 {
-		return []interface{}{}
+		return [][]string{}
 	}
-	arr := make([]interface{}, 0, r.Capacity())
+	arr := make([][]string, 0, r.Capacity())
 	for i := 0; i < r.Capacity(); i++ {
 		idx := r.mod(i + r.tail)
 		arr = append(arr, r.get(idx))
@@ -106,12 +106,12 @@ func (r *Ring) Values() []interface{} {
 **/
 
 // sets a value at the given unmodified index and returns the modified index of the value
-func (r *Ring) set(p int, v interface{}) {
+func (r *Ring) set(p int, v []string) {
 	r.buff[r.mod(p)] = v
 }
 
 // gets a value based at a given unmodified index
-func (r *Ring) get(p int) interface{} {
+func (r *Ring) get(p int) []string {
 	return r.buff[r.mod(p)]
 }
 
@@ -122,7 +122,7 @@ func (r *Ring) mod(p int) int {
 
 func (r *Ring) checkInit() {
 	if r.buff == nil {
-		r.buff = make([]interface{}, DefaultCapacity)
+		r.buff = make([][]string, DefaultCapacity)
 		for i := range r.buff {
 			r.buff[i] = nil
 		}
@@ -136,7 +136,7 @@ func (r *Ring) extend(size int) {
 	} else if size < len(r.buff) {
 		r.buff = r.buff[0:size]
 	}
-	newb := make([]interface{}, size-len(r.buff))
+	newb := make([][]string, size-len(r.buff))
 	for i := range newb {
 		newb[i] = nil
 	}

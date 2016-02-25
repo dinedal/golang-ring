@@ -17,12 +17,16 @@ func TestSavesSomeData(t *testing.T) {
 	r := Ring{}
 	r.SetCapacity(10)
 	for i := 0; i < 7; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 0; i < 7; i++ {
 		x := r.Dequeue()
-		if x != i {
-			t.Fatal("Unexpected response", x, "wanted", i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		if x[0] != val[0] {
+			t.Fatal("Unexpected response", x, "wanted", val)
 		}
 	}
 }
@@ -31,18 +35,24 @@ func TestReusesBuffer(t *testing.T) {
 	r := Ring{}
 	r.SetCapacity(10)
 	for i := 0; i < 7; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 0; i < 7; i++ {
 		r.Dequeue()
 	}
 	for i := 7; i < 14; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 7; i < 14; i++ {
 		x := r.Dequeue()
-		if x != i {
-			t.Fatal("Unexpected response", x, "wanted", i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		if x[0] != val[0] {
+			t.Fatal("Unexpected response", x, "wanted", val)
 		}
 	}
 }
@@ -51,12 +61,16 @@ func TestOverflowsBuffer(t *testing.T) {
 	r := Ring{}
 	r.SetCapacity(10)
 	for i := 0; i < 20; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 10; i < 20; i++ {
+		val := make([]string, 1)
+		val[0] = string(i)
 		x := r.Dequeue()
-		if x != i {
-			t.Fatal("Unexpected response", x, "wanted", i)
+		if x[0] != val[0] {
+			t.Fatal("Unexpected response", x, "wanted", val)
 		}
 	}
 }
@@ -65,12 +79,16 @@ func TestPartiallyOverflows(t *testing.T) {
 	r := Ring{}
 	r.SetCapacity(10)
 	for i := 0; i < 15; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 5; i < 15; i++ {
+		val := make([]string, 1)
+		val[0] = string(i)
 		x := r.Dequeue()
-		if x != i {
-			t.Fatal("Unexpected response", x, "wanted", i)
+		if x[0] != val[0] {
+			t.Fatal("Unexpected response", x, "wanted", val)
 		}
 	}
 }
@@ -79,17 +97,21 @@ func TestPeeks(t *testing.T) {
 	r := Ring{}
 	r.SetCapacity(10)
 	for i := 0; i < 10; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 	}
 	for i := 0; i < 10; i++ {
 		r.Peek()
 		r.Peek()
 		x1 := r.Peek()
 		x := r.Dequeue()
-		if x != i {
-			t.Fatal("Unexpected response", x, "wanted", i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		if x[0] != val[0] {
+			t.Fatal("Unexpected response", x, "wanted", val)
 		}
-		if x1 != x {
+		if x1[0] != x[0] {
 			t.Fatal("Unexpected response", x1, "wanted", x)
 		}
 	}
@@ -103,7 +125,9 @@ func TestConstructsArr(t *testing.T) {
 		t.Fatal("Unexpected values", v, "wanted len of", 0)
 	}
 	for i := 1; i < 21; i++ {
-		r.Enqueue(i)
+		val := make([]string, 1)
+		val[0] = string(i)
+		r.Enqueue(val)
 		l := i
 		if l > 10 {
 			l = 10
